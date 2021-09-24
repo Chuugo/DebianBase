@@ -58,4 +58,5 @@ systemctl start qbittorrent-nox
 systemctl daemon-reload
 systemctl enable qbittorrent-nox
 systemctl status qbittorrent-nox
+systemctl reload qbittorrent-nox
 fi
