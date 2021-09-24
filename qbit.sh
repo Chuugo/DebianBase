@@ -1,42 +1,58 @@
 #!/bin/bash
 
-
-while [[ -z $username ]]
-do
-read -p "Enter the user name : " user
-done
-
+read -p "Enter the user name : " username
 echo "Validating $username"
+
 if [ `grep -c $username /etc/passwd` -eq 0 ]
 then
-   echo
    echo "ERROR : PLEASE ENTER A VALID USERNAME."
-   echo "Exiting ..."
+   echo "EXITING"
    exit
 else
 
 add-apt-repository ppa:qbittorrent-team/qbittorrent-stable
-apt install qbittorrent-nox
-qbittorrent-nox
+apt install qbittorrent-nox -y
+qbittorrent-nox & disown
 adduser --system --group qbittorrent-nox
 adduser $username qbittorrent-nox
 
-echo "[Unit]
-Description=qBittorrent Command Line Client
-After=network.target
+if [ -f /etc/systemd/system/qbittorrent-nox.service ]
+then
+   rm /etc/systemd/system/qbittorrent-nox.service
+   echo "[Unit]
+   Description=qBittorrent Command Line Client
+   After=network.target
 
-[Service]
-#Do not change to "simple"
-Type=forking
-User=qbittorrent-nox
-Group=qbittorrent-nox
-UMask=007
-ExecStart=/usr/bin/qbittorrent-nox -d --webui-port=8080
-Restart=on-failure
+   [Service]
+   #Do not change to "simple"
+   Type=forking
+   User=qbittorrent-nox
+   Group=qbittorrent-nox
+   UMask=007
+   ExecStart=/usr/bin/qbittorrent-nox -d --webui-port=4369
+   Restart=on-failure
 
-[Install]
-WantedBy=multi-user.target
-" >> /etc/systemd/system/qbittorrent-nox.service
+   [Install]
+   WantedBy=multi-user.target
+   " >> /etc/systemd/system/qbittorrent-nox.service
+
+else
+   echo "[Unit]
+   Description=qBittorrent Command Line Client
+   After=network.target
+
+   [Service]
+   #Do not change to "simple"
+   Type=forking
+   User=qbittorrent-nox
+   Group=qbittorrent-nox
+   UMask=007
+   ExecStart=/usr/bin/qbittorrent-nox -d --webui-port=4369
+   Restart=on-failure
+
+   [Install]
+   WantedBy=multi-user.target
+   " >> /etc/systemd/system/qbittorrent-nox.service
 systemctl start qbittorrent-nox
 systemctl daemon-reload
 systemctl enable qbittorrent-nox
