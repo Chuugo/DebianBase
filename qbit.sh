@@ -16,43 +16,44 @@ qbittorrent-nox & disown
 adduser --system --group qbittorrent-nox
 adduser $username qbittorrent-nox
 
-if [ -f /etc/systemd/system/qbittorrent-nox.service ]
-then
-   rm /etc/systemd/system/qbittorrent-nox.service
-   echo "[Unit]
-   Description=qBittorrent Command Line Client
-   After=network.target
+   if [ -f /etc/systemd/system/qbittorrent-nox.service ]
+   then
+      rm /etc/systemd/system/qbittorrent-nox.service
+      echo "[Unit]
+      Description=qBittorrent Command Line Client
+      After=network.target
 
-   [Service]
-   #Do not change to "simple"
-   Type=forking
-   User=qbittorrent-nox
-   Group=qbittorrent-nox
-   UMask=007
-   ExecStart=/usr/bin/qbittorrent-nox -d --webui-port=4369
-   Restart=on-failure
+      [Service]
+      #Do not change to "simple"
+      Type=forking
+      User=qbittorrent-nox
+      Group=qbittorrent-nox
+      UMask=007
+      ExecStart=/usr/bin/qbittorrent-nox -d --webui-port=4369
+      Restart=on-failure
 
-   [Install]
-   WantedBy=multi-user.target
-   " >> /etc/systemd/system/qbittorrent-nox.service
+      [Install]
+      WantedBy=multi-user.target
+      " >> /etc/systemd/system/qbittorrent-nox.service
 
-else
-   echo "[Unit]
-   Description=qBittorrent Command Line Client
-   After=network.target
+   else
+      echo "[Unit]
+      Description=qBittorrent Command Line Client
+      After=network.target
 
-   [Service]
-   #Do not change to "simple"
-   Type=forking
-   User=qbittorrent-nox
-   Group=qbittorrent-nox
-   UMask=007
-   ExecStart=/usr/bin/qbittorrent-nox -d --webui-port=4369
-   Restart=on-failure
+      [Service]
+      #Do not change to "simple"
+      Type=forking
+      User=qbittorrent-nox
+      Group=qbittorrent-nox
+      UMask=007
+      ExecStart=/usr/bin/qbittorrent-nox -d --webui-port=4369
+      Restart=on-failure
 
-   [Install]
-   WantedBy=multi-user.target
-   " >> /etc/systemd/system/qbittorrent-nox.service
+      [Install]
+      WantedBy=multi-user.target
+      " >> /etc/systemd/system/qbittorrent-nox.service
+   fi
 systemctl start qbittorrent-nox
 systemctl daemon-reload
 systemctl enable qbittorrent-nox
